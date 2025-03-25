@@ -28,7 +28,6 @@ const serializeTasks = (tasks: Task[]): string => {
   try {
     // Make a deep copy and handle Date objects explicitly
     const tasksToStore = tasks.map(task => {
-      console.log(`Serializing task ${task.id}, reminder before:`, task.reminder);
       
       const prepared = {
         ...task,
@@ -38,7 +37,6 @@ const serializeTasks = (tasks: Task[]): string => {
           : (task.reminder ? new Date(task.reminder).toISOString() : null)
       };
       
-      console.log(`Serialized task ${task.id}, reminder after:`, prepared.reminder);
       return prepared;
     });
     
@@ -57,7 +55,6 @@ const deserializeTasks = (json: string): Task[] => {
     
     // Convert reminder string back to Date objects if they exist
     return parsedTasks.map((task: any) => {
-      console.log(`Deserializing task ${task.id}, reminder before:`, task.reminder);
       
       // Ensure we handle notifyEnabled properly too
       const processed = {
@@ -66,7 +63,6 @@ const deserializeTasks = (json: string): Task[] => {
         notifyEnabled: typeof task.notifyEnabled === 'boolean' ? task.notifyEnabled : false
       };
       
-      console.log(`Deserialized task ${task.id}, reminder after:`, processed.reminder);
       return processed;
     });
   } catch (e) {
@@ -91,7 +87,6 @@ export const useTaskStorage = () => {
   // Use useCallback for task operations to prevent unnecessary renders
   const addTask = useCallback((newTaskText: string, reminderDate: Date | null, notifyEnabled: boolean) => {
     try {
-      console.log("➕ Adding new task:", newTaskText, reminderDate, notifyEnabled);
       
       const newTaskObj: Task = {
         id: generateUUID(),
@@ -101,11 +96,9 @@ export const useTaskStorage = () => {
         notifyEnabled: notifyEnabled && !!reminderDate
       };
       
-      console.log("✅ Created new task object:", newTaskObj);
       
       setTasks(prev => {
         const newTasks = [...prev, newTaskObj];
-        console.log("📋 New tasks array after adding:", newTasks);
         return newTasks;
       });
       
@@ -121,13 +114,11 @@ export const useTaskStorage = () => {
     updates: Partial<Omit<Task, 'id'>>
   ) => {
     try {
-      console.log(`🔄 Updating task ${id} with:`, updates);
       
       setTasks(prev => {
         const newTasks = prev.map(task => 
           task.id === id ? { ...task, ...updates } : task
         );
-        console.log(`📋 New tasks array after updating ${id}:`, newTasks);
         return newTasks;
       });
       
@@ -138,11 +129,9 @@ export const useTaskStorage = () => {
 
   const deleteTask = useCallback((id: string) => {
     try {
-      console.log(`🗑️ Deleting task ${id}`);
       
       setTasks(prev => {
         const newTasks = prev.filter(task => task.id !== id);
-        console.log(`📋 New tasks array after deleting ${id}:`, newTasks);
         return newTasks;
       });
       
@@ -153,13 +142,11 @@ export const useTaskStorage = () => {
 
   const toggleComplete = useCallback((id: string) => {
     try {
-      console.log(`🔄 Toggling completion for task ${id}`);
       
       setTasks(prev => {
         const newTasks = prev.map(task => 
           task.id === id ? { ...task, completed: !task.completed } : task
         );
-        console.log(`📋 New tasks array after toggling ${id}:`, newTasks);
         return newTasks;
       });
       

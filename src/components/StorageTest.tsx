@@ -50,7 +50,6 @@ const StorageTest = () => {
   const checkTasksData = () => {
     try {
       const tasksData = localStorage.getItem('tasks');
-      console.log('Current tasks data in localStorage:', tasksData);
       alert(tasksData ? `Tasks data exists (${tasksData.length} chars)` : 'No tasks data in localStorage');
     } catch (error) {
       console.error('Error reading tasks data:', error);
@@ -61,7 +60,6 @@ const StorageTest = () => {
   const clearTasksData = () => {
     try {
       localStorage.removeItem('tasks');
-      console.log('Cleared tasks data from localStorage');
       alert('Tasks data cleared from localStorage');
     } catch (error) {
       console.error('Error clearing tasks data:', error);

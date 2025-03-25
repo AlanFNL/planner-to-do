@@ -68,7 +68,6 @@ function App() {
       localStorage.removeItem('__test__');
       
       // Debug: Check what's already in localStorage
-      console.log("localStorage available and working");
       debugLocalStorage.inspect("tasks");
       debugLocalStorage.inspect("username");
     } catch (error) {
@@ -115,7 +114,6 @@ function App() {
   };
 
   const cancelAddTask = () => {
-    console.log("Cancelling task addition");
     setIsAddingTask(false);
     setNewTask("");
     setTaskReminder("");
@@ -125,7 +123,6 @@ function App() {
   const addNewTask = () => {
     if (newTask.trim() !== "") {
       try {
-        console.log("Starting task addition...");
         
         // Ensure we have a default reminder time
         let useReminder = taskReminder;
@@ -137,15 +134,11 @@ function App() {
         
         // Create a date object from the input string
         const reminderDate = new Date(useReminder);
-        console.log("Adding task:", {
-          text: newTask,
-          reminder: reminderDate,
-          notifyEnabled: notifyEnabled
-        });
+      
         
         // Add the task
-        const result = addTask(newTask, reminderDate, notifyEnabled);
-        console.log("Task addition result:", result);
+        addTask(newTask, reminderDate, notifyEnabled);
+ 
         
         // Debug: Verify task was saved
         setTimeout(() => {
@@ -155,19 +148,16 @@ function App() {
         // Reset form
         cancelAddTask();
         
-        console.log("Task addition completed successfully");
       } catch (error) {
         console.error("Error adding task:", error);
       }
     } else {
-      console.log("Task text is empty, not adding");
     }
   };
 
   const handleEditTask = (id: string) => {
     const taskToEdit = tasks.find(task => task.id === id);
     if (taskToEdit) {
-      console.log("Editing task:", taskToEdit);
       setEditingTaskId(id);
       setEditTaskText(taskToEdit.text);
       
@@ -180,7 +170,6 @@ function App() {
         
         // Format it for the input
         setTaskReminder(formatDateTimeForInput(reminderDate));
-        console.log("Setting reminder to:", formatDateTimeForInput(reminderDate));
       } else {
         // Set a default reminder if none exists
         const now = new Date();
@@ -190,7 +179,6 @@ function App() {
       
       // Ensure notifyEnabled reflects the task's current setting
       setNotifyEnabled(!!taskToEdit.notifyEnabled);
-      console.log("Setting notifications to:", !!taskToEdit.notifyEnabled);
     }
   };
 
@@ -206,7 +194,6 @@ function App() {
       
       // Create a date object from the input string
       const reminderDate = new Date(useReminder);
-      console.log("Saving task with reminder:", reminderDate, "Notifications:", notifyEnabled);
       
       updateTask(editingTaskId, {
         text: editTaskText,
