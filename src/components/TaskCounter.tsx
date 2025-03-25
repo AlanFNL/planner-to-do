@@ -9,7 +9,7 @@ const TaskCounter = ({ pendingCount }: TaskCounterProps) => {
   return (
     <div className="flex flex-wrap items-center justify-center text-xl md:text-3xl font-bold gap-2">
       <h2 className="text-white/60 whitespace-nowrap">You have</h2> 
-      <div className="flex items-center gap-2 min-w-[80px] justify-center">
+      <div className="flex items-center gap-0 md:gap-1 min-w-[80px] justify-center">
         <CheckSquare2 className="shrink-0" />
         <div className="h-8 w-8 relative overflow-hidden">
           <AnimatePresence mode="popLayout" initial={false}>
@@ -19,7 +19,7 @@ const TaskCounter = ({ pendingCount }: TaskCounterProps) => {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="absolute left-1/2 -translate-x-1/2"
+              className="absolute left-1/2 -translate-x-1/2 mt-[2px] sm:-mt-[2px]"
             >
               {pendingCount}
             </motion.span>

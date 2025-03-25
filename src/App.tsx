@@ -124,21 +124,13 @@ function App() {
     if (newTask.trim() !== "") {
       try {
         
-        // Ensure we have a default reminder time
-        let useReminder = taskReminder;
-        if (!useReminder) {
-          const now = new Date();
-          now.setMinutes(now.getMinutes() + 30);
-          useReminder = formatDateTimeForInput(now);
-        }
+        // Parse the reminder date - it's already ISO string from the date picker
+        const reminderDate = taskReminder ? new Date(taskReminder) : null;
         
-        // Create a date object from the input string
-        const reminderDate = new Date(useReminder);
-      
+     
         
         // Add the task
         addTask(newTask, reminderDate, notifyEnabled);
- 
         
         // Debug: Verify task was saved
         setTimeout(() => {
@@ -184,16 +176,9 @@ function App() {
 
   const saveEditedTask = () => {
     if (editingTaskId && editTaskText.trim() !== "") {
-      // Ensure we have a default reminder time
-      let useReminder = taskReminder;
-      if (!useReminder) {
-        const now = new Date();
-        now.setMinutes(now.getMinutes() + 30);
-        useReminder = formatDateTimeForInput(now);
-      }
+      // Parse the reminder date - it's already ISO string from the date picker
+      const reminderDate = taskReminder ? new Date(taskReminder) : null;
       
-      // Create a date object from the input string
-      const reminderDate = new Date(useReminder);
       
       updateTask(editingTaskId, {
         text: editTaskText,
@@ -221,7 +206,7 @@ function App() {
   };
 
   return (
-    <motion.div layout className="fixed inset-0 flex flex-col items-center w-screen min-h-screen overflow-x-hidden bg-[#171717]">
+    <motion.div layout className="fixed inset-0 flex flex-col items-center w-screen min-h-screen overflow-x-hidden">
       <motion.div
         layout 
         transition={{ type: "spring", stiffness: 300, damping: 30 }}
@@ -273,7 +258,7 @@ function App() {
 
       {/* Fixed add task UI at the bottom */}
       {showAddTaskUI && activeTab === "pending" && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 z-50 bg-[#171717]">
+        <div className="fixed bottom-2 left-0 right-0 p-4 z-50 bg-[#171717]">
           <AnimatePresence mode="wait">
             {!isAddingTask ? (
               <AddTaskButton onClick={handleAddTask} />

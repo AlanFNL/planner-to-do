@@ -28,8 +28,18 @@ const AddTaskForm = ({
 }: AddTaskFormProps) => {
   const taskInputRef = useRef<HTMLInputElement>(null);
   const { permissionState, requestPermission } = useContext(NotificationsContext);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
-    return taskReminder ? new Date(taskReminder) : null;
+  
+  // Store the date directly without converting to string
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    // If there's an existing task reminder, parse it
+    if (taskReminder) {
+      return new Date(taskReminder);
+    }
+    
+    // Otherwise, set default to 30 minutes from now
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 30);
+    return now;
   });
 
   useEffect(() => {
@@ -37,24 +47,20 @@ const AddTaskForm = ({
       taskInputRef.current.focus();
     }
     
-    // Set default date/time if not already set
+    // If no task reminder is set, initialize with default time
     if (!taskReminder) {
       const now = new Date();
-      // Add 30 minutes to current time for a sensible default
       now.setMinutes(now.getMinutes() + 30);
-      // Format as YYYY-MM-DDTHH:MM (format required by datetime-local input)
-      const formattedDate = now.toISOString().slice(0, 16);
-      setTaskReminder(formattedDate);
       setSelectedDate(now);
+      
+      // We'll update taskReminder based on selectedDate in another effect
     }
-  }, [taskReminder, setTaskReminder]);
+  }, [taskReminder]);
 
-  // Update string date when the DatePicker date changes
+  // Update the string representation whenever selectedDate changes
   useEffect(() => {
-    if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().slice(0, 16);
-      setTaskReminder(formattedDate);
-    }
+    // Store the ISO string directly
+    setTaskReminder(selectedDate.toISOString());
   }, [selectedDate, setTaskReminder]);
 
   const handleTaskInputKeyDown = (e: React.KeyboardEvent) => {
@@ -165,7 +171,7 @@ const AddTaskForm = ({
               <Calendar size={18} className="text-white/60 shrink-0" />
               <DatePicker
                 selected={selectedDate}
-                onChange={(date: Date | null) => setSelectedDate(date)}
+                onChange={(date: Date | null) => date && setSelectedDate(date)}
                 showTimeSelect
                 dateFormat="MMM d, yyyy h:mm aa"
                 timeFormat="HH:mm"

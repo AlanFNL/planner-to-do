@@ -28,8 +28,18 @@ const EditTaskForm = ({
 }: EditTaskFormProps) => {
   const editInputRef = useRef<HTMLInputElement>(null);
   const { permissionState, requestPermission } = useContext(NotificationsContext);
-  const [selectedDate, setSelectedDate] = useState<Date | null>(() => {
-    return taskReminder ? new Date(taskReminder) : null;
+  
+  // Store the date directly without converting to string
+  const [selectedDate, setSelectedDate] = useState<Date>(() => {
+    // If there's an existing task reminder, parse it
+    if (taskReminder) {
+      return new Date(taskReminder);
+    }
+    
+    // Otherwise, set default to 30 minutes from now
+    const now = new Date();
+    now.setMinutes(now.getMinutes() + 30);
+    return now;
   });
 
   useEffect(() => {
@@ -38,12 +48,10 @@ const EditTaskForm = ({
     }
   }, []);
 
-  // Update string date when the DatePicker date changes
+  // Update the string representation whenever selectedDate changes
   useEffect(() => {
-    if (selectedDate) {
-      const formattedDate = selectedDate.toISOString().slice(0, 16);
-      setTaskReminder(formattedDate);
-    }
+    // Store the ISO string directly
+    setTaskReminder(selectedDate.toISOString());
   }, [selectedDate, setTaskReminder]);
 
   const handleInputKeyDown = (e: React.KeyboardEvent) => {
@@ -122,7 +130,7 @@ const EditTaskForm = ({
           <Calendar size={16} className="text-white/60" />
           <DatePicker
             selected={selectedDate}
-            onChange={(date: Date | null) => setSelectedDate(date)}
+            onChange={(date: Date | null) => date && setSelectedDate(date)}
             showTimeSelect
             dateFormat="MMM d, yyyy h:mm aa"
             timeFormat="HH:mm"

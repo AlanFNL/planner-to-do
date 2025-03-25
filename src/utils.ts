@@ -1,28 +1,23 @@
 /**
  * Formats a Date object to a date-time string suitable for datetime-local input
  */
-export const formatDateTimeForInput = (date: Date | string | null): string => {
-  if (!date) return '';
+export const formatDateTimeForInput = (date: Date): string => {
+  // Get local ISO string parts
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
   
-  try {
-    const localDate = date instanceof Date ? date : new Date(date);
-    
-    // Check for invalid date
-    if (isNaN(localDate.getTime())) {
-      console.error('Invalid date input:', date);
-      return '';
-    }
-    
-    // Format to YYYY-MM-DDTHH:MM format needed by datetime-local input
-    // Use toISOString but account for timezone offset to ensure local time is displayed
-    const offset = localDate.getTimezoneOffset();
-    const localDateAdjusted = new Date(localDate.getTime() - offset * 60 * 1000);
-    
-    return localDateAdjusted.toISOString().slice(0, 16);
-  } catch (error) {
-    console.error('Error formatting date for input:', error);
-    return '';
-  }
+  // Format as YYYY-MM-DDTHH:MM (format required by datetime-local input)
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+/**
+ * Parses a datetime-local input value to a Date object while preserving the local timezone
+ */
+export const parseDateTimeFromInput = (dateString: string): Date => {
+  return new Date(dateString);
 };
 
 /**
